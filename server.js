@@ -1,12 +1,24 @@
 
 const cors = require('cors');
 const express = require('express');
+const multer = require('multer')
 const app = express();
 const models = require('./models')
 const port = 8080;
+const upload = multer({
+  storage : multer.diskStorage({
+    destination : (req, file, cb) => {
+      cb(null, 'uploads/');
+    },
+    filename : (req, file, cb) => {
+      cb(null, file.originalname);
+    }
+  })
+})
 
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static("uploads"))
 
 app.get("/products/:id", (req,res)=>{
   const params = req.params;
@@ -67,6 +79,14 @@ app.post("/products", (req,res)=>{
     res.send("상품 업로드 에러", err)
   })
 });
+
+app.post("/image", upload.single("image"), (req, res) =>{
+  const file = req.file;
+  console.log(file)
+  res.send({
+    imageUrl : file.path,
+  });
+})
 
 app.listen(port, () =>{
     console.log("서버가 돌아가고 있습니다.");
