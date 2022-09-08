@@ -59,32 +59,37 @@ app.get("/products",(req,res) => {
 
 app.post("/products", (req,res)=>{
   const body = req.body;
-  const {name, description, price, seller} = body;
+  console.log(req.body)
+  const {name, description, price, seller, imageUrl} = body;
   if (!name || !description || !price || !seller){
-    res.send("모든 필드를 입력하세요.")
+    return res.send("모든 필드를 입력하세요.")
   }
+  
   models.Product.create({
     name,
     description,
     price,
-    seller
+    seller,
+    imageUrl
+    
   })
   .then((result) =>{
+    
     console.log(`상품 생성 ${result}`)
-    res.send({
+    return res.send({
       result,
     });
   }).catch((err) => {
     console.error(err);
-    res.send("상품 업로드 에러", err)
+    return res.send("상품 업로드 에러", err)
   })
 });
 
 app.post("/image", upload.single("image"), (req, res) =>{
-  const file = req.file;
-  console.log(file)
+  console.log(req.file)
+
   res.send({
-    imageUrl : file.path,
+    imageUrl : req.file.path
   });
 })
 
@@ -99,4 +104,5 @@ app.listen(port, () =>{
       process.exit();
     
 })
+
 })
