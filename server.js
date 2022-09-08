@@ -62,7 +62,7 @@ app.post("/products", (req,res)=>{
   console.log(req.body)
   const {name, description, price, seller, imageUrl} = body;
   if (!name || !description || !price || !seller){
-    return res.send("모든 필드를 입력하세요.")
+    return res.status(400).send("모든 필드를 입력하세요.")
   }
   
   models.Product.create({
@@ -81,7 +81,7 @@ app.post("/products", (req,res)=>{
     });
   }).catch((err) => {
     console.error(err);
-    return res.send("상품 업로드 에러", err)
+    return res.status(400).send("상품 업로드 에러", err)
   })
 });
 
@@ -99,7 +99,7 @@ app.listen(port, () =>{
       console.log('db 연결 성공!');
     })
     .catch((err) =>{
-      console.error(err);
+      console.status(400).error(err);
       console.log("db 연결 에러ㅜ");
       process.exit();
     
