@@ -40,12 +40,23 @@ app.get("/products/:id", (req,res)=>{
   })
 });
 
-
+app.get('/banners', (req,res) => {
+  models.Banner.findAll({
+    limit : 2,
+  })
+  .then((result) => {
+    res.send({
+      banners : result,
+    });
+  })
+  .catch((error)=>{res.status(500).send('error!')})
+})
 app.get("/products",(req,res) => {
   models.Product.findAll({
     //limit : 1,
     order : [["createdAt", "DESC"]],
-    attributes : ["id", "name", "price", "createdAt", "seller", "imageUrl"],
+
+    attributes : ["id", "name", "price", "createdAt", "seller", "imageUrl", "soldout" ],
   }).then((result) => {
     
     res.send({
@@ -56,6 +67,7 @@ app.get("/products",(req,res) => {
     res.send(`에러 발생 ${err}`)
   })
 });
+
 
 app.post("/products", (req,res)=>{
   const body = req.body;
